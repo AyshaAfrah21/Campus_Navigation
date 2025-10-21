@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:textAlignment="center">
+
+    <ImageView
+        android:id="@+id/appicon"
+        android:layout_width="439dp"
+        android:layout_height="269dp"
+        android:src="@drawable/appicon" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/dm_serif_display"
+        android:text="Welcome to Campus Navigation"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:fontFamily="@font/dm_serif_display"
+        android:text="Scan the World Around You"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:layout_marginTop="6dp"/>
+
+    <Button
+        android:id="@+id/btn_get_started"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_button"
+        android:drawableStart="@drawable/filecamera_icon"
+        android:drawablePadding="8dp"
+        android:gravity="center"
+        android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:text="Start"
+        android:textColor="#4285F4"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+
+</LinearLayout>
