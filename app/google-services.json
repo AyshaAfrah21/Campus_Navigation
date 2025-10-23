@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "289557099514",
+    "project_id": "navigation-d2d63",
+    "storage_bucket": "navigation-d2d63.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289557099514:android:11a915687928a5fbfc6a43",
+        "android_client_info": {
+          "package_name": "com.example.campusnavigation"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSfmbpNqOlCa4W5DpFDL0fKwrlf_q_su4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289557099514:android:0ed53bcead67d09cfc6a43",
+        "android_client_info": {
+          "package_name": "com.example.project_demo_perplexity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSfmbpNqOlCa4W5DpFDL0fKwrlf_q_su4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
