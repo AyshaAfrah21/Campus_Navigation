@@ -35,9 +35,8 @@ class MainActivity : AppCompatActivity() {
             "N 14",
             "N 15",
             "N 16",
-            "Room1",
             "Ladies Staffroom",
-            "Namaz room"
+            "Namaaz room"
         )
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, destinations)
@@ -50,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please select a destination", Toast.LENGTH_SHORT).show()
             } else {
                 val intent = Intent(this, CaptureActivity::class.java)
-                intent.putExtra("destinationName", selected)
+                intent.putExtra("DESTINATION_NAME", selected)
                 startActivity(intent)
             }
         }

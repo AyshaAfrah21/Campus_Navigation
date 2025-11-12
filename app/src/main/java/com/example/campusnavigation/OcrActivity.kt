@@ -15,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
@@ -32,8 +33,10 @@ class OcrActivity : AppCompatActivity() {
 
     private var currentPhotoPath: String? = null
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
-
+    private val db: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
     private var sourceName: String? = null
+    private var destinationName: String?=null
+    private var isValidSource = false // ✅ Track if source exists in DB
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +49,7 @@ class OcrActivity : AppCompatActivity() {
         goButton = findViewById(R.id.goButton)
 
         sourceName = intent.getStringExtra("SOURCE_NAME")
-
+        destinationName = intent.getStringExtra("DESTINATION_NAME")
         // Show source name initially
         resultText.text = "Source: $sourceName"
         resultText.movementMethod = ScrollingMovementMethod()
@@ -65,22 +68,20 @@ class OcrActivity : AppCompatActivity() {
 
         captureImage()
 
-        recaptureBtn.setOnClickListener {
-            captureImage()
-        }
+        recaptureBtn.setOnClickListener { captureImage() }
 
         goButton.setOnClickListener {
-            if (sourceName.isNullOrEmpty()) {
-                Toast.makeText(this, "Source not detected yet. Please capture again.", Toast.LENGTH_SHORT).show()
+            if (!isValidSource) {
+                Toast.makeText(this, "❌ Invalid or unknown source. Please scan again.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val destinationName = intent.getStringExtra("DESTINATION_NAME") // get destination passed to OcrActivity
+
+
             val intent = Intent(this, ARNavigationActivity::class.java)
             intent.putExtra("SOURCE_NAME", sourceName)
-            intent.putExtra("DESTINATION_NAME", destinationName)  // add destination here
+            intent.putExtra("DESTINATION_NAME", destinationName)
             startActivity(intent)
         }
-
     }
 
     private fun createImageFile(): File {
@@ -115,12 +116,41 @@ class OcrActivity : AppCompatActivity() {
 
         recognizer.process(image)
             .addOnSuccessListener { ocrText ->
-                // Display both source name and detected text
-                sourceName = ocrText.text
-                resultText.text = "Source: $sourceName\n\nDetected Text:\n${ocrText.text}"
+                sourceName = ocrText.text.trim()
+                resultText.text = "Detected Text:\n${ocrText.text}"
+
+                if (sourceName.isNullOrEmpty()) {
+                    Toast.makeText(this, "No text detected. Try again.", Toast.LENGTH_SHORT).show()
+                    return@addOnSuccessListener
+                }
+
+                // ✅ Check Firestore for the detected source
+                checkSourceInDatabase(sourceName!!)
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
+    private fun checkSourceInDatabase(source: String) {
+        db.collection("Coordinates")
+            .document(source) // directly check if a document with this ID exists
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    isValidSource = true
+                    Toast.makeText(this, "✅ Source found in database!", Toast.LENGTH_SHORT).show()
+                    resultText.append("\n\nStatus: ✅ $source found in DB ")
+                } else {
+                    isValidSource = false
+                    Toast.makeText(this, "❌ Source not found in database.", Toast.LENGTH_SHORT).show()
+                    resultText.append("\n\nStatus: ❌ $source not found in DB")
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error checking database: ${e.message}", Toast.LENGTH_SHORT).show()
+                isValidSource = false
+            }
+    }
+
 }

@@ -15,6 +15,7 @@ class CaptureActivity : AppCompatActivity() {
     private lateinit var btnCapture: Button
     private var selectedDestination: String? = null
 
+    // Request camera permission
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
@@ -29,7 +30,9 @@ class CaptureActivity : AppCompatActivity() {
         setContentView(R.layout.activity_capture)
 
         btnCapture = findViewById(R.id.btn_capture)
-        selectedDestination = intent.getStringExtra("destinationName")
+
+        // Get destination name passed from the previous screen
+        selectedDestination = intent.getStringExtra("DESTINATION_NAME")
 
         btnCapture.setOnClickListener {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
@@ -47,11 +50,10 @@ class CaptureActivity : AppCompatActivity() {
             Toast.makeText(this, "No destination selected", Toast.LENGTH_SHORT).show()
             return
         }
+
+        // Launch OCR activity to capture source (classroom nameboard, etc.)
         val intent = Intent(this, OcrActivity::class.java)
-        intent.putExtra("DESTINATION_NAME", selectedDestination)  // pass destination under clear key
-        intent.putExtra("SOURCE_NAME", "")  // optionally pass empty source for now
-
+        intent.putExtra("DESTINATION_NAME", selectedDestination)
         startActivity(intent)
-
     }
 }

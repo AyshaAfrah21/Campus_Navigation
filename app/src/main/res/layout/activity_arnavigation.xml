@@ -23,5 +23,34 @@
         android:background="#80000000"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/sourceDestinationBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EEEEEE"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:padding="10dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:elevation="4dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:text=" " />
+
+    <TextView
+        android:id="@+id/bfsPathText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="BFS Path will appear here"
+        android:textColor="#FF0000"
+        android:textSize="16sp"
+        android:background="#80000000"
+        android:padding="8dp"
+        android:layout_gravity="top"/>
+
+
+
+
 
 </FrameLayout>

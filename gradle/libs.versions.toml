@@ -1,5 +1,8 @@
 [versions]
 agp = "8.10.0"
+arsceneview = "2.2.2"
+coreVersion = "1.15.0"
+googleCore = "1.51.0"
 kotlin = "2.0.0"
 googleServices = "4.4.2"
 coreKtx = "1.16.0"
@@ -19,9 +22,14 @@ fragment = "1.8.8"
 sceneform = "1.23.0"
 core = "1.17.1"
 sceneformUx = "1.17.1"
+assets = "1.17.1"
+sceneformUxVersion = "1.15.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+ar-core = { module = "com.google.ar:core", version.ref = "googleCore" }
+arsceneview = { module = "io.github.sceneview:arsceneview", version.ref = "arsceneview" }
+core-v1150 = { module = "com.google.ar.sceneform:core", version.ref = "coreVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -46,7 +54,9 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 sceneform-core = { group = "com.gorisse.thomas.sceneform", name = "core", version.ref = "sceneform" }
 sceneform-ux   = { group = "com.gorisse.thomas.sceneform", name = "ux", version.ref = "sceneform" }
 core = { group = "com.google.ar.sceneform", name = "core", version.ref = "core" }
+sceneform-ux-v1150 = { module = "com.google.ar.sceneform.ux:sceneform-ux", version.ref = "sceneformUxVersion" }
 ux-sceneform-ux = { group = "com.google.ar.sceneform.ux", name = "sceneform-ux", version.ref = "sceneformUx" }
+assets = { group = "com.google.ar.sceneform", name = "assets", version.ref = "assets" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

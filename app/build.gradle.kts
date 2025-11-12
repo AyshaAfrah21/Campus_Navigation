@@ -6,6 +6,9 @@ plugins {
 }
 
 android {
+    aaptOptions {
+        noCompress += listOf("glb", "gltf")
+    }
     namespace = "com.example.campusnavigation"
     compileSdk = 35
 
@@ -74,10 +77,12 @@ dependencies {
     implementation("com.google.mlkit:text-recognition:16.0.1")
 
     // ---- ARCore + Sceneform (legacy, avoids Engine error) ----
-    implementation("com.google.ar.sceneform.ux:sceneform-ux:1.15.0")
-    implementation("com.google.ar.sceneform:core:1.15.0")
-    implementation("com.google.ar:core:1.40.0")// Check for the latest ARCore version
-
+    implementation(libs.sceneform.ux.v1150)
+    implementation(libs.core.v1150)
+    implementation(libs.ar.core)// Check for the latest ARCore version
+    implementation(libs.core)
+    implementation(libs.ux.sceneform.ux)
+    implementation(libs.assets)
 
 
     implementation(libs.androidx.fragment)
@@ -89,8 +94,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-storage-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation(libs.core)
-    implementation(libs.ux.sceneform.ux)
+
 
 
     // ---- Testing ----
