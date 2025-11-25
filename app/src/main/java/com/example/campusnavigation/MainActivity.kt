@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             "N 15",
             "N 16",
             "Ladies Staffroom",
-            "Namaaz room"
+            "N 11"
         )
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, destinations)
