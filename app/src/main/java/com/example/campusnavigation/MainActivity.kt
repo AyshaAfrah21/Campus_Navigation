@@ -26,17 +26,17 @@ class MainActivity : AppCompatActivity() {
 
         spinner = findViewById(R.id.spinner_destinations)
         btnNext = findViewById(R.id.btn_next)
-
+    
         val destinations = listOf(
             "Select destination",
-            "HOD Chamber",
+            "N 18",
             "Girls Washroom",
             "N 13",
             "N 14",
             "N 15",
             "N 16",
-            "Ladies Staffroom",
-            "N 11"
+            "N 11",
+            "N 17"
         )
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, destinations)

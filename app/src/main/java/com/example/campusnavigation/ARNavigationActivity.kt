@@ -11,7 +11,7 @@ import android.hardware.SensorManager
 import android.media.Image
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView // <--- Added Import
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -50,7 +50,7 @@ class ARNavigationActivity : AppCompatActivity(), SensorEventListener {
     }
 
     // UI Elements
-    private lateinit var tvDebugDistance: TextView // <--- New UI Variable
+    private lateinit var tvDebugDistance: TextView
     private lateinit var arFragment: ArFragment
 
     private var minDistanceToCurrentNode = Float.MAX_VALUE
@@ -141,10 +141,34 @@ class ARNavigationActivity : AppCompatActivity(), SensorEventListener {
         } else if (event.sensor.type == Sensor.TYPE_MAGNETIC_FIELD) {
             magnetometerReading = lowPass(event.values.clone(), magnetometerReading)
         }
-        SensorManager.getRotationMatrix(rotationMatrix, null, accelerometerReading, magnetometerReading)
-        SensorManager.getOrientation(rotationMatrix, orientationAngles)
-    }
 
+        val rotationMatrix = FloatArray(9)
+        val adjustedRotationMatrix = FloatArray(9) // Fix for Portrait Mode
+
+        val success = SensorManager.getRotationMatrix(rotationMatrix, null, accelerometerReading, magnetometerReading)
+
+        if (success) {
+            // REMAP: Tells Android "The phone is vertical, not flat"
+            SensorManager.remapCoordinateSystem(
+                rotationMatrix,
+                SensorManager.AXIS_X,
+                SensorManager.AXIS_Z,
+                adjustedRotationMatrix
+            )
+
+            SensorManager.getOrientation(adjustedRotationMatrix, orientationAngles)
+
+            // Convert to Degrees
+            val azimuth = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
+
+            // Normalize to 0-360
+            val heading = (azimuth + 360) % 360
+
+            // VISUAL DEBUG: Check if this number changes logically as you turn your body
+            // runOnUiThread { tvDebugDistance.text = "Heading: ${heading.toInt()}°" }
+        }
+    }
+    //STABILIZING ACCELEROMETER AND MAGNETOMETER
     private fun lowPass(input: FloatArray, output: FloatArray): FloatArray {
         if (!isSensorInitialized) {
             System.arraycopy(input, 0, output, 0, input.size)
@@ -313,8 +337,9 @@ class ARNavigationActivity : AppCompatActivity(), SensorEventListener {
 
         val currentHeadingRadians = orientationAngles[0]
         val currentHeadingDegrees = Math.toDegrees(currentHeadingRadians.toDouble()).toFloat()
-
-        mapRotationOffsetDegrees = currentHeadingDegrees // +180f if needed
+        val azimuth = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
+        mapRotationOffsetDegrees = (azimuth + 360) % 360
+        mapRotationOffsetDegrees = currentHeadingDegrees// +180f if needed
 
         val rotatedTarget = rotateVector(targetMapCoord)
         worldOffset = Vector3.subtract(cameraPositionAR, rotatedTarget)
@@ -390,13 +415,19 @@ class ARNavigationActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun rotateVector(vec: Vector3): Vector3 {
-        val radians = Math.toRadians(mapRotationOffsetDegrees.toDouble())
+        // 1. INVERT Angle: Compass is CW, Math is CCW. We must negate the degrees.
+        val radians = Math.toRadians(-mapRotationOffsetDegrees.toDouble())
+
         val cos = cos(radians)
         val sin = sin(radians)
-        // Standard Formula (Try swapping +/- signs if rotation direction is wrong)
-        val newX = (vec.x * cos - vec.z * sin).toFloat()
-        val newZ = (vec.x * sin + vec.z * cos).toFloat()
-        return Vector3(newX, vec.y, newZ)
+
+        // 2. Standard Rotation Formula
+        val xRot = (vec.x * cos - vec.z * sin).toFloat()
+        val zRot = (vec.x * sin + vec.z * cos).toFloat()
+
+        // 3. ARCORE FIX: ARCore's "Forward" is Negative Z.
+        // If your Map's "Forward" is Positive Z, we must NEGATE Z here.
+        return Vector3(xRot, vec.y, -zRot)
     }
 
     private fun startPathfinding(source: String, destination: String) {
